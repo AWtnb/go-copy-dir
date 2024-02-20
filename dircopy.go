@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -11,6 +12,9 @@ func Copy(src string, newPath string) error {
 }
 
 func copy(src string, newPath string) error {
+	fmt.Println("=============")
+	fmt.Printf("src: '%s'\n", src)
+	fmt.Printf("newPath: '%s'\n", newPath)
 	fs, err := os.Stat(src)
 	if err != nil {
 		return err
@@ -30,6 +34,7 @@ func copy(src string, newPath string) error {
 }
 
 func addDir(src string, newPath string) error {
+	fmt.Printf("making dir '%s' \n", newPath)
 	if err := os.Mkdir(newPath, 0700); err != nil {
 		return err
 	}
@@ -51,11 +56,13 @@ func addDir(src string, newPath string) error {
 }
 
 func addFile(src string, newPath string) error {
+	fmt.Printf("reading file '%s' \n", src)
 	d, err := os.ReadFile(src)
 	if err != nil {
 		return err
 	}
 
+	fmt.Printf("making file '%s' \n", newPath)
 	df, err := os.Create(newPath)
 	if err != nil {
 		return err
