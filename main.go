@@ -20,7 +20,7 @@ func main() {
 func run(src string, newPath string) int {
 	err := Copy(src, newPath)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("ERROR: %s", err)
 		return 1
 	}
 	return 0

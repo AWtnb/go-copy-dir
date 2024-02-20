@@ -4,17 +4,34 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func Copy(src string, newPath string) error {
-	err := copy(src, newPath)
-	return err
+	if _, err := os.Stat(newPath); err == nil {
+		return fmt.Errorf("dest path already exists")
+	}
+	if strings.HasPrefix(newPath, src) {
+		return fmt.Errorf("danger to invoke infinit-loop")
+	}
+	return copy(src, newPath)
+}
+
+func isLink(path string) bool {
+	fi, err := os.Lstat(path)
+	if err != nil {
+		return false
+	}
+	return fi.Mode()&os.ModeSymlink != 0 || fi.Mode()&os.ModeDevice != 0
 }
 
 func copy(src string, newPath string) error {
 	fmt.Println("=============")
 	fmt.Printf("src: '%s'\n", src)
 	fmt.Printf("newPath: '%s'\n", newPath)
+	if isLink(src) {
+		return fmt.Errorf("'%s' is a link to atnother location", src)
+	}
 	fs, err := os.Stat(src)
 	if err != nil {
 		return err
